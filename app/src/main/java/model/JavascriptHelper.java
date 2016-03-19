@@ -1,5 +1,6 @@
 package model;
 
+import android.os.Handler;
 import android.util.Log;
 import android.webkit.WebView;
 
@@ -18,6 +19,8 @@ import java.util.UUID;
 public class JavascriptHelper {
     private WebView mWebView;
     private final HtmlViewerJavascriptInterface mHtmlViewerJavascriptInterface;
+    private static final int CALLBACK_DELAY = 300;
+
 
     public interface FinishCallback {
         void onFinish(Object result);
@@ -35,40 +38,64 @@ public class JavascriptHelper {
         //mWebView.addJavascriptInterface(mHtmlViewerJavascriptInterface, "HtmlViewer");
     }
 
+    public void postDelayed(Runnable action, long ms){
+        mWebView.postDelayed(action, ms);
+    }
+
     public void callAndWaitForSpecifiedSelector(final String name, final String finishedSelector, final FinishCallback callback){
+
         String executedJavaScript = "javascript:"+name;
 
         mWebView.loadUrl(executedJavaScript);
         final String id = showView();
 
-        final Deferred deferred = new DeferredObject();
-
         HtmlViewerJavascriptInterface.Callback result = new HtmlViewerJavascriptInterface.Callback(){
             @Override
             public void onResult(String html) {
-
+                if (finishedSelector.isEmpty()){
+                    executeCallback(name);
+                    return;
+                }
 
                 Document doc = Jsoup.parse(html);
 
                 Elements element = doc.select(finishedSelector);
                 //Log.d("ElementIs", element.toString());
-                boolean isFindSelector = element != null;
+                boolean isFindSelector = element != null && element.size() > 0 ;
 
-                if (finishedSelector.isEmpty() || isFindSelector){
+                if (isFindSelector){
                     //deferred.resolve(name);
-                    mWebView.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            callback.onFinish(name);
-                        }
-                    }, 1000);
-
-                    mHtmlViewerJavascriptInterface.removeCallback(id);
+                    executeCallback(name);
+                }else{
+                    executeCallback(null);
                 }
+            }
+
+            private void executeCallback(final Object result) {
+                mWebView.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.onFinish(result);
+                    }
+                }, CALLBACK_DELAY);
+
+                mHtmlViewerJavascriptInterface.removeCallback(id);
             }
         };
         mHtmlViewerJavascriptInterface.addWaitCallback(id, false, result);
         //return deferred.promise();
+    }
+
+    public void reload(){
+        if (mWebView != null){
+            Handler handler = mWebView.getHandler();
+            if (handler != null){
+                handler.removeCallbacksAndMessages(null);
+            }
+
+        }
+
+
     }
 
     public String showView(){
@@ -77,7 +104,6 @@ public class JavascriptHelper {
         String showHtml = String.format("javascript:HtmlViewer.showHTML" +
                 "('%s', '<html>'+document.getElementsByTagName('html')[0].innerHTML+'</html>');", randomId);
 
-        Log.d("showView", showHtml);
         mWebView.loadUrl(showHtml);
         return randomId;
 

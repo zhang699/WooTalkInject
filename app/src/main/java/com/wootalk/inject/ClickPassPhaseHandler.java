@@ -8,8 +8,8 @@ import model.JavascriptHelper;
  * Created by JimmyJhang on 2016/3/18.
  */
 public class ClickPassPhaseHandler extends BaseHandler {
-    public ClickPassPhaseHandler(BaseHandler next) {
-        super(next);
+    public ClickPassPhaseHandler(PlayContext context, BaseHandler next) {
+        super(context, next);
     }
 
     @Override

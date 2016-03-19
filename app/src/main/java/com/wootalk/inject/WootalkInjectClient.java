@@ -1,13 +1,11 @@
-package model;
+package com.wootalk.inject;
 
 import android.graphics.Bitmap;
 import android.util.Log;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 
-import com.wootalk.inject.BaseHandler;
-import com.wootalk.inject.ClickPassPhaseHandler;
-import com.wootalk.inject.ClickSideViewHandler;
+import model.JavascriptHelper;
 
 
 /**
@@ -15,9 +13,9 @@ import com.wootalk.inject.ClickSideViewHandler;
  */
 public class WootalkInjectClient extends WebViewClient{
     private final WebView mWebView;
-    private static final String URL_WOOTALK = "https://wootalk.today/";
+    private static final String URL_WOOTALK = "https://wootalk.today/key/%E6%88%90%E4%BA%BA%E6%A8%A1%E5%BC%8F";
     private final JavascriptHelper mJavascriptHelper;
-    private final BaseHandler mHandler;
+    private final RobotActionPlayManager mPM;
     //  private Activity mActivity;
     private Runnable mLoadMainTask = new Runnable() {
         @Override
@@ -30,8 +28,9 @@ public class WootalkInjectClient extends WebViewClient{
         mWebView = view;
         mJavascriptHelper = new JavascriptHelper(view);
         mWebView.postDelayed(mLoadMainTask, 0);
+        mPM = new RobotActionPlayManager(mJavascriptHelper, new Settings(view.getContext()));
+        mPM.init();
 
-        mHandler = new ClickSideViewHandler(new ClickPassPhaseHandler(null));
     }
 
     @Override
@@ -49,24 +48,26 @@ public class WootalkInjectClient extends WebViewClient{
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
         Log.d("onPageFinished ", ""+url);
-        //Log.d("onPageFinished ", );
-        //view.loadUrl("javascript:$('#open-left').click()");
 
-        mHandler.next(mJavascriptHelper);
+        mPM.play();
+    }
 
-        //mJavascriptHelper.changeWebView(view);
-        //DeferredManager m = new AndroidDeferredManager();
-
-
-
-        /*mJavascriptHelper.callAndWaitForSpecifiedSelector("$('.snap-drawer ul li:first-child a')[0].click()", "", finishCallback);
-        mJavascriptHelper.callAndWaitForSpecifiedSelector("$('#keyInput').val('成人模式')", "", finishCallback);*/
-
-
-
-
-
+    public boolean isRunning(){
+        return mPM.isRunning();
     }
 
 
+
+    public void setOnStateChangeListener(RobotActionPlayManager.OnStateChangeListener stateChangeListener){
+        mPM.setOnStateChangeListener(stateChangeListener);
+    }
+
+
+    public void start(boolean b) {
+        mPM.start(b);
+    }
+
+    public void reloadWebView() {
+        mJavascriptHelper.reload();
+    }
 }

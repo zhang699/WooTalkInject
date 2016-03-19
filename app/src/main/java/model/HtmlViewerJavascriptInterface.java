@@ -24,8 +24,8 @@ public class HtmlViewerJavascriptInterface {
 
     @JavascriptInterface
     public void showHTML(String id, String html){
-        Log.d("showHTMLId", id);
-        Log.d("showHTML", html);
+        //Log.d("showHTMLId", id);
+        //Log.d("showHTML", html);
         if (mHtmlResults.containsKey(id)){
             CallbackInfo callbackInfo = mHtmlResults.get(id);
 

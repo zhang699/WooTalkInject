@@ -1,0 +1,67 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+   <!-- <SwitchPreference
+        android:defaultValue="true"
+        android:key="example_switch"
+        android:summary="@string/pref_description_social_recommendations"
+        android:title="@string/pref_title_social_recommendations" />-->
+
+    <!-- NOTE: EditTextPreference accepts EditText attributes. -->
+    <!-- NOTE: EditTextPreference's summary should be set to its value by the activity code. -->
+ <CheckBoxPreference
+
+     android:defaultValue="false"
+     android:key="background_mode"
+     android:enabled="false"
+     android:summary="@string/summary_mode_background"
+     android:title="@string/settings_mode_background" />
+
+    <CheckBoxPreference
+
+        android:defaultValue="false"
+        android:key="garbage_talk_mode"
+        android:enabled="false"
+        android:summary="@string/summary_garbage_talk"
+        android:title="@string/settings_mode_garbage_talk" />
+
+    <CheckBoxPreference
+        android:defaultValue="true"
+        android:key="mode_find_girl"
+        android:summary="@string/summary_mode_find_girl"
+        android:title="@string/settings_mode_find_girl" />
+
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_opening_sentence"
+        android:inputType="textCapWords"
+        android:key="opening_sentence"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_opening_sentence" />
+
+    <EditTextPreference
+        android:capitalize="words"
+        android:defaultValue="@string/pref_default_personality_sentence"
+        android:inputType="textCapWords"
+        android:key="personality_sentence"
+        android:maxLines="1"
+        android:selectAllOnFocus="true"
+        android:singleLine="true"
+        android:title="@string/pref_title_personality_sentence" />
+
+
+    <!-- NOTE: Hide buttons to simplify the UI. Users can touch outside the dialog to
+         dismiss it. -->
+    <!-- NOTE: ListPreference's summary should be set to its value by the activity code. -->
+    <ListPreference
+        android:defaultValue="5"
+        android:entries="@array/pref_skipping_waiting_time"
+        android:entryValues="@array/pref_skipping_waiting_time_list_values"
+        android:key="skipping_waitingtime"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="@string/pref_title_skipping_waiting_time" />
+
+</PreferenceScreen>

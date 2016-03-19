@@ -7,10 +7,18 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.MotionEvent;
 import android.view.View;
+
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.content.Intent;
+import android.widget.CompoundButton;
+import android.widget.ImageButton;
+import android.widget.ProgressBar;
+import android.widget.Switch;
+import android.widget.TextView;
 
-import model.WootalkInjectClient;
+import com.wootalk.inject.RobotActionPlayManager;
+import com.wootalk.inject.WootalkInjectClient;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -34,6 +42,8 @@ public class FullscreenActivity extends AppCompatActivity {
      * and a change of the status and navigation bar.
      */
     private static final int UI_ANIMATION_DELAY = 300;
+
+    private ImageButton mSettingsButtons;
     private final Handler mHideHandler = new Handler();
    // private View mContentView;
     private final Runnable mHidePart2Runnable = new Runnable() {
@@ -45,12 +55,12 @@ public class FullscreenActivity extends AppCompatActivity {
             // Note that some of these constants are new as of API 16 (Jelly Bean)
             // and API 19 (KitKat). It is safe to use them, as they are inlined
             // at compile-time and do nothing on earlier devices.
-            mWooTalkWebView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
+           /* mWooTalkWebView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LOW_PROFILE
                     | View.SYSTEM_UI_FLAG_FULLSCREEN
                     | View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                     | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY
                     | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);
+                    | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION);*/
         }
     };
     private View mControlsView;
@@ -88,6 +98,11 @@ public class FullscreenActivity extends AppCompatActivity {
     };
 
     private WebView mWooTalkWebView;
+    private Switch mEnableSwitch;
+    private WootalkInjectClient mWootalkClient;
+    private ImageButton mRefreshButton;
+    private ProgressBar mStateProgressBar;
+    private TextView mStateTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,16 +121,62 @@ public class FullscreenActivity extends AppCompatActivity {
         // Upon interacting with UI controls, delay any scheduled hide()
         // operations to prevent the jarring behavior of controls going away
         // while interacting with the UI.
-        findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
+        //findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
         initWooTalkWebView();
 
+        mSettingsButtons = (ImageButton) findViewById(R.id.button_settings);
+        mEnableSwitch = (Switch) findViewById(R.id.enable_control_switch);
+        mStateProgressBar = (ProgressBar) findViewById(R.id.state_progressbar);
+        mStateTextView = (TextView) findViewById(R.id.textview_status);
+        mRefreshButton = (ImageButton) findViewById(R.id.button_refresh);
 
+        mEnableSwitch.setEnabled(false);
+        mStateProgressBar.setVisibility(View.INVISIBLE);
+        mSettingsButtons.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                startActivity(new Intent(FullscreenActivity.this, SettingsActivity.class));
+            }
+        });
+
+        mRefreshButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mWootalkClient.reloadWebView();
+                mWooTalkWebView.reload();
+            }
+        });
+        final CompoundButton.OnCheckedChangeListener onControlChangeListener = new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                mEnableSwitch.setEnabled(false);
+                mWootalkClient.start(b);
+            }
+        };
+
+        mEnableSwitch.setOnCheckedChangeListener(onControlChangeListener);
+
+        mWootalkClient.setOnStateChangeListener(new RobotActionPlayManager.OnStateChangeListener() {
+            @Override
+            public void onStateChanged(String handlerName, String stateName) {
+                mEnableSwitch.setEnabled(true);
+                mEnableSwitch.setOnCheckedChangeListener(null);
+
+                boolean isRunning = mWootalkClient.isRunning();
+                mEnableSwitch.setChecked(isRunning);
+                mStateProgressBar.setVisibility(isRunning ? View.VISIBLE: View.INVISIBLE);
+                mStateTextView.setText(isRunning ? R.string.state_running : R.string.state_stop);
+
+                mEnableSwitch.setOnCheckedChangeListener(onControlChangeListener);
+            }
+        });
     }
 
     private void initWooTalkWebView(){
         mWooTalkWebView = (WebView) findViewById(R.id.wootalk_webview);
-        mWooTalkWebView.setWebViewClient(new WootalkInjectClient(mWooTalkWebView));
+        mWootalkClient = new WootalkInjectClient(mWooTalkWebView);
+        mWooTalkWebView.setWebViewClient(mWootalkClient);
 
         WebSettings webSettings = mWooTalkWebView.getSettings();
         webSettings.setJavaScriptEnabled(true);
@@ -153,7 +214,7 @@ public class FullscreenActivity extends AppCompatActivity {
         if (actionBar != null) {
             actionBar.hide();
         }
-        mControlsView.setVisibility(View.GONE);
+        //mControlsView.setVisibility(View.GONE);
         mVisible = false;
 
         // Schedule a runnable to remove the status and navigation bar after a delay
@@ -164,8 +225,8 @@ public class FullscreenActivity extends AppCompatActivity {
     @SuppressLint("InlinedApi")
     private void show() {
         // Show the system bar
-        mWooTalkWebView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
+       /* mWooTalkWebView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);*/
         mVisible = true;
 
         // Schedule a runnable to display UI elements after a delay
