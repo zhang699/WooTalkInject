@@ -65,7 +65,7 @@ public class JavascriptHelper {
 
                 if (isFindSelector){
                     //deferred.resolve(name);
-                    executeCallback(name);
+                    executeCallback(element);
                 }else{
                     executeCallback(null);
                 }

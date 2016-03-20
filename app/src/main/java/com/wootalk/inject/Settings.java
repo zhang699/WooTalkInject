@@ -12,6 +12,10 @@ public class Settings {
     private final SharedPreferences mPrefs;
     public static final String KEY_OPENING_SENTENCE = "opening_sentence";
     public static final String KEY_SKIPPING_WAITING_TIME = "skipping_waitingtime";
+    public static final String KEY_AFTER_OPENING_WAITING_TIME = "afteropening_waitingtime";
+
+    public static final String KEY_PERSONALITY_OPENING = "personality_opening_sentence";
+
     public Settings(Context context){
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -20,7 +24,16 @@ public class Settings {
         return Integer.parseInt(mPrefs.getString(KEY_SKIPPING_WAITING_TIME, "0"));
     }
 
+    public int getWaitForResponseDelayAfterOpening(){
+        return Integer.parseInt(mPrefs.getString(KEY_AFTER_OPENING_WAITING_TIME, "0"));
+    }
+
     public String getOpeningSentence(){
         return mPrefs.getString(KEY_OPENING_SENTENCE, "");
     }
+
+    public String getPersonalityOpeningSentence(){
+        return mPrefs.getString(KEY_PERSONALITY_OPENING, "");
+    }
+
 }

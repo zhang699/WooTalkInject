@@ -2,6 +2,9 @@ package com.wootalk.inject;
 
 import android.util.Log;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import model.JavascriptHelper;
 
 /**
@@ -19,6 +22,7 @@ public class RobotActionPlayManager implements PlayContext {
     private boolean mAskForStop;
     private boolean mTruelyStop;
     private OnStateChangeListener mOnStateChangeListener;
+    private List<BaseHandler> mExceptionHandlers = new ArrayList<BaseHandler>();
 
     public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener){
         mOnStateChangeListener = onStateChangeListener;
@@ -44,21 +48,29 @@ public class RobotActionPlayManager implements PlayContext {
     }
 
     public void init(){
+        mExceptionHandlers.clear();
+        BaseHandler checkIfExit = new CheckIfExitHandler(this);
+        checkIfExit.fail(new ChangePersonHandler(this, null));
+        mExceptionHandlers.add(checkIfExit);
 
 
         BaseHandler talkOrQuitdecision =
-                this.add(new StartChatHandler(this)).add(new CheckIfExitHandler(this, false));
+                this.add(new StartChatHandler(this));
 
-        talkOrQuitdecision.fail(new ChangePersonHandler(this, null));
 
+        String openingSentence = mSettings.getOpeningSentence();
+        String personalitySentence = mSettings.getPersonalityOpeningSentence();
 
         //talkOrQuitdecision.fail(new ChangePersonHandler(null, this));
-
-        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForResponseHandler(this))
-                                                    .fail(new ChangePersonHandler(this, null))
-                                                    .add(new SendTextHandler(this, ""))
-                                                    .add(new CheckIfExitHandler(this));
-        checkIfQuit.fail(new ChangePersonHandler(this, null));
+        BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
+        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForTargetInitResponseHandler(this))
+                                                    .fail(mChangePeronHandler)
+                                                    .add(new SendTextHandler(this, openingSentence))
+                                                    .add(new WaitForAnswerTargetHandler(this))
+                                                    .fail(mChangePeronHandler)
+                                                    .add(new SendTextHandler(this, personalitySentence))
+                                                    .add(new WaitForAnswerTargetHandler(this))
+                                                    .fail(mChangePeronHandler);
 
     }
     public void play() {
@@ -69,6 +81,10 @@ public class RobotActionPlayManager implements PlayContext {
         }
 
         mStartHandler.next(mJavascriptHelper);
+
+        for (BaseHandler h : mExceptionHandlers){
+            h.next(mJavascriptHelper);
+        }
     }
 
     @Override

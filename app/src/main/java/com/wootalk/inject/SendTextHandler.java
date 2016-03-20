@@ -20,9 +20,9 @@ public class SendTextHandler extends BaseHandler {
     public void next(final JavascriptHelper instructor) {
         super.next(instructor);
         //'stranger typing'"#contents .stranger.typing"
-        mTextMsg = mPContext.getSettings().getOpeningSentence();
+
         String inputMsg = String.format("$('#messageInput').val('%s')", mTextMsg);
-        Log.d("SendTextHandler.next", inputMsg);
+        //Log.d("SendTextHandler.next", inputMsg);
         callWithCallback(inputMsg, "", new JavascriptHelper.FinishCallback(){
             @Override
             public void onFinish(Object result) {

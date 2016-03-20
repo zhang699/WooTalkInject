@@ -192,6 +192,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             // guidelines.
             bindPreferenceSummaryToValue(findPreference(Settings.KEY_OPENING_SENTENCE));
             bindPreferenceSummaryToValue(findPreference(Settings.KEY_SKIPPING_WAITING_TIME));
+            bindPreferenceSummaryToValue(findPreference(Settings.KEY_AFTER_OPENING_WAITING_TIME));
+            bindPreferenceSummaryToValue(findPreference(Settings.KEY_PERSONALITY_OPENING));
         }
 
         @Override

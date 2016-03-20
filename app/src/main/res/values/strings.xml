@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">WootalkInject Application</string>
+    <string name="app_name">AlphaWo</string>
 
     <string name="dummy_button">Dummy Button</string>
     <string name="dummy_content">DUMMY\nCONTENT</string>
@@ -24,11 +24,26 @@
         <item>10 sec</item>
         <item>15 sec</item>
     </string-array>
+
+    <string name="pref_title_after_skipping_waiting_time">設定幾秒後對方沒回覆開場白就離開</string>
     <string-array name="pref_skipping_waiting_time_list_values">
         <item>5</item>
         <item>10</item>
         <item>15</item>
     </string-array>
+
+    <string-array name="pref_after_opening_skipping_waiting_time">
+        <item>5 sec</item>
+        <item>10 sec</item>
+        <item>15 sec</item>
+    </string-array>
+
+    <string-array name="pref_after_opening_skipping_waiting_time_list_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+    </string-array>
+
 
     <!-- Example settings for Data & Sync -->
     <string name="pref_header_data_sync">Data &amp; sync</string>
@@ -67,6 +82,7 @@
     <string name="summary_mode_find_girl">當對方率先說話，會判定為男生然後直接離開</string>
     <string name="summary_garbage_talk">尚未完成</string>
     <string name="summary_personality_opening"></string>
+    <!--(當對方回覆開場白後使用)-->
     <string name="pref_title_personality_sentence" >個性開場白(當對方回覆開場白後使用)</string>
     <string name="pref_default_personality_sentence">你好啊我是陽光宅男</string>
     <string name="settings_mode_background">背景執行模式</string>

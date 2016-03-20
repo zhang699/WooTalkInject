@@ -43,6 +43,7 @@ public class CheckIfExitHandler extends BaseHandler {
                 }
             }
         });
+
         /*instructor.postDelayed(new Runnable() {
             @Override
             public void run() {

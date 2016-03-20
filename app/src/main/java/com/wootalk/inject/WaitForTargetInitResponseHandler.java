@@ -8,9 +8,10 @@ import model.JavascriptHelper;
  * Created by Chang on 2016/3/18.
  */
 
-public class WaitForResponseHandler extends BaseHandler {
+public class WaitForTargetInitResponseHandler extends BaseHandler {
     private int mWaitSec = 12;
-    public WaitForResponseHandler(PlayContext context) {
+
+    public WaitForTargetInitResponseHandler(PlayContext context) {
         super(context);
     }
 
@@ -33,10 +34,11 @@ public class WaitForResponseHandler extends BaseHandler {
             @Override
             public void onResult(Object result, Runnable task) {
                 if (result != null){
-                    //find stranger typing
+                    Log.d("instructor.postDelay", "goFailHandler");
+
                     setFinished();
                     nextToFailHandler();
-                    Log.d("instructor.postDelay", "goFailHandler");
+
                 }else{
                     //next(instructor);
                     Log.d("instructor.postDelay", "keepChecking");
@@ -47,7 +49,8 @@ public class WaitForResponseHandler extends BaseHandler {
                 }
             }
         };
-        startCheckSpecificTask("", "#messages .stranger.text[mid=\"0\"] ", 0, callback);
+        String strangerMsgSelector = String.format(ActionElementSelector.SELECTOR_STRANGER_MESSAGES, 0);
+        startCheckSpecificTask("", strangerMsgSelector, 0, callback);
 
     }
 }

@@ -45,7 +45,7 @@
         android:capitalize="words"
         android:defaultValue="@string/pref_default_personality_sentence"
         android:inputType="textCapWords"
-        android:key="personality_sentence"
+        android:key="personality_opening_sentence"
         android:maxLines="1"
         android:selectAllOnFocus="true"
         android:singleLine="true"
@@ -63,5 +63,15 @@
         android:negativeButtonText="@null"
         android:positiveButtonText="@null"
         android:title="@string/pref_title_skipping_waiting_time" />
+
+   <ListPreference
+       android:defaultValue="5"
+       android:entries="@array/pref_after_opening_skipping_waiting_time"
+       android:entryValues="@array/pref_after_opening_skipping_waiting_time_list_values"
+       android:key="afteropening_waitingtime"
+       android:negativeButtonText="@null"
+       android:positiveButtonText="@null"
+       android:title="@string/pref_title_after_skipping_waiting_time" />
+
 
 </PreferenceScreen>

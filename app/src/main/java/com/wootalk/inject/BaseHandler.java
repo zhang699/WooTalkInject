@@ -20,7 +20,7 @@ public class BaseHandler {
     protected JavascriptHelper.FinishCallback mFinishCallback = new JavascriptHelper.FinishCallback() {
         @Override
         public void onFinish(Object result) {
-            Log.d("onPageFinished", "the command is finished:" + result);
+            Log.d("JavascriptHelper", "the command is finished:" + result);
             doNext(mNextHandler, mHelper);
         }
     };
@@ -43,7 +43,7 @@ public class BaseHandler {
     private void doNext(BaseHandler handler, JavascriptHelper helper){
         if (handler != null && mPContext.canPlayNext()){
             handler.next(helper);
-        }else{
+        }else if (!mPContext.canPlayNext()){
             reportState(PlayContext.STATE_STOP);
         }
     }
@@ -94,7 +94,7 @@ public class BaseHandler {
         return mNextHandler;
     }
 
-    BaseHandler fail(ChangePersonHandler failHandler) {
+    BaseHandler fail(BaseHandler failHandler) {
         mFailHandler = failHandler;
         return this;
     }
