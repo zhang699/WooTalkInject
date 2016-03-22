@@ -3,6 +3,7 @@ package inject.wootalk.com.wootalkinjectapplication;
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.graphics.Color;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.widget.TextView;
 
 import com.wootalk.inject.PlayContext;
 import com.wootalk.inject.RobotActionPlayManager;
+import com.wootalk.inject.Settings;
 import com.wootalk.inject.WootalkInjectClient;
 
 /**
@@ -109,6 +111,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private ProgressBar mStateProgressBar;
     private TextView mStateTextView;
     private NotificationManager mNotifyMgr;
+    private Settings mSettings;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -183,6 +186,7 @@ public class FullscreenActivity extends AppCompatActivity {
 
             }
         });
+        mSettings = new Settings(this);
     }
 
     private void initWooTalkWebView(){
@@ -207,6 +211,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private void sendNotficiation(String title, String text){
 
        // Log.d("testForNotification", "testForNotification");
+        boolean isVibrate = false;
+
         int notificationId = 001;
         Intent resultIntent = new Intent(this, FullscreenActivity.class);
 
@@ -218,6 +224,7 @@ public class FullscreenActivity extends AppCompatActivity {
                         PendingIntent.FLAG_UPDATE_CURRENT
                 );
 
+
         NotificationCompat.Builder mBuilder =
                 new NotificationCompat.Builder(this)
                         .setContentTitle(title)
@@ -225,6 +232,11 @@ public class FullscreenActivity extends AppCompatActivity {
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentIntent(resultPendingIntent);
 
+        if (mSettings.getNotificationVibrateEnabled()){
+            mBuilder.setVibrate(new long[] { 1000, 1000});
+        }
+
+        mBuilder.setLights(Color.CYAN, 1000, 1000);
         mNotifyMgr.notify(notificationId, mBuilder.build());
     }
 

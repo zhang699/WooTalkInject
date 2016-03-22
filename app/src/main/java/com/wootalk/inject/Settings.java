@@ -16,6 +16,7 @@ public class Settings {
 
     public static final String KEY_PERSONALITY_OPENING = "personality_opening_sentence";
 
+    public static final String KEY_NOTIFICATION_NEW_MESSAGES = "notifications_new_message_vibrate";
     public Settings(Context context){
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
     }
@@ -34,6 +35,10 @@ public class Settings {
 
     public String getPersonalityOpeningSentence(){
         return mPrefs.getString(KEY_PERSONALITY_OPENING, "");
+    }
+
+    public boolean getNotificationVibrateEnabled(){
+        return mPrefs.getBoolean(KEY_NOTIFICATION_NEW_MESSAGES, true);
     }
 
 }

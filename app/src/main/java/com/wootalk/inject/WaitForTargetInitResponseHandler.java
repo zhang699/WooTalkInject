@@ -9,25 +9,17 @@ import model.JavascriptHelper;
  */
 
 public class WaitForTargetInitResponseHandler extends BaseHandler {
-    private int mWaitSec = 12;
+
 
     public WaitForTargetInitResponseHandler(PlayContext context) {
         super(context);
     }
 
-    private static final int CHECKING_INTERVAL = 1000;
+    private static final int CHECKING_INTERVAL = 500;
     @Override
     public void next(final JavascriptHelper instructor) {
         super.next(instructor);
-        mWaitSec = mPContext.getSettings().getWaitForResponseDelay();
-        instructor.postDelayed(new Runnable() {
-            @Override
-            public void run(){
-                setFinished();
-                call("", "");
 
-            }
-        }, mWaitSec * 1000);
 
 
         OnCheckResult callback = new OnCheckResult(){

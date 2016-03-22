@@ -7,7 +7,7 @@ import model.JavascriptHelper;
  */
 public class CheckIfExitHandler extends BaseHandler {
     private final String EXIT_STRING = "對方離開了，請按離開按鈕回到首頁";
-    private static final int CHECK_DELAY = 500;
+    private static final int CHECKING_DELAY = 500;
     private final boolean mIsCheckInfinitely;
 
     public CheckIfExitHandler(PlayContext context, boolean isCheckInfinitely) {
@@ -24,7 +24,7 @@ public class CheckIfExitHandler extends BaseHandler {
         super.next(instructor);
         String checkSelector = String.format(".system.text:contains(%s)", EXIT_STRING);
 
-        startCheckSpecificTask("", checkSelector, CHECK_DELAY, new OnCheckResult(){
+        startCheckSpecificTask("", checkSelector, CHECKING_DELAY, new OnCheckResult(){
             @Override
             public void onResult(Object result, Runnable task) {
                 if (result != null) {
@@ -33,7 +33,7 @@ public class CheckIfExitHandler extends BaseHandler {
                 } else {
 
                     if (!isFinished() && mIsCheckInfinitely) {
-                        instructor.postDelayed(task, CHECK_DELAY);
+                        instructor.postDelayed(task, CHECKING_DELAY);
                     }
 
                     if (!mIsCheckInfinitely) {
@@ -44,19 +44,5 @@ public class CheckIfExitHandler extends BaseHandler {
             }
         });
 
-        /*instructor.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                String checkSelector = String.format(".system.text:contains(%s)", EXIT_STRING);
-                final Runnable task = this;
-
-                callWithCallback("", checkSelector, new JavascriptHelper.FinishCallback() {
-                    @Override
-                    public void onFinish(Object result) {
-
-                    }
-                });
-            }
-        }, CHECK_DELAY);*/
     }
 }

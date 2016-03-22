@@ -23,6 +23,7 @@ public class RobotActionPlayManager implements PlayContext {
     private boolean mTruelyStop;
     private OnStateChangeListener mOnStateChangeListener;
     private List<BaseHandler> mExceptionHandlers = new ArrayList<BaseHandler>();
+    private FinishHandler mFinishHandler;
 
     public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener){
         mOnStateChangeListener = onStateChangeListener;
@@ -48,10 +49,18 @@ public class RobotActionPlayManager implements PlayContext {
     }
 
     public void init(){
+
+
         mExceptionHandlers.clear();
         BaseHandler checkIfExit = new CheckIfExitHandler(this);
         checkIfExit.fail(new ChangePersonHandler(this, null));
+
+        BaseHandler checkTargetFirstMessage = new WaitForTargetInitResponseHandler(this);
+        checkTargetFirstMessage.fail(new ChangePersonHandler(this, null));
+
         mExceptionHandlers.add(checkIfExit);
+        mExceptionHandlers.add(checkTargetFirstMessage);
+        //mExceptionHandlers.add(mFinishHandler);
 
 
         BaseHandler talkOrQuitdecision =
@@ -60,10 +69,12 @@ public class RobotActionPlayManager implements PlayContext {
 
         String openingSentence = mSettings.getOpeningSentence();
         String personalitySentence = mSettings.getPersonalityOpeningSentence();
-        BaseHandler finishHandler = new FinishHandler(this);
+
+
+        mFinishHandler = new FinishHandler(this);
         //talkOrQuitdecision.fail(new ChangePersonHandler(null, this));
         BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
-        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForTargetInitResponseHandler(this))
+        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForFirstReponseHandler(this))
                                                     .fail(mChangePeronHandler)
                                                     .add(new SendTextHandler(this, openingSentence))
                                                     .add(new WaitForAnswerTargetHandler(this))
@@ -71,7 +82,7 @@ public class RobotActionPlayManager implements PlayContext {
                                                     .add(new SendTextHandler(this, personalitySentence))
                                                     .add(new WaitForAnswerTargetHandler(this))
                                                     .fail(mChangePeronHandler)
-                                                    .add(finishHandler);
+                                                    .add(mFinishHandler);
 
     }
     public void play() {
