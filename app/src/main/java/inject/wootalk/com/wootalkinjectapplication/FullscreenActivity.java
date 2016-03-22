@@ -1,10 +1,14 @@
 package inject.wootalk.com.wootalkinjectapplication;
 
 import android.annotation.SuppressLint;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.NotificationCompat;
+import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
@@ -17,6 +21,7 @@ import android.widget.ProgressBar;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.wootalk.inject.PlayContext;
 import com.wootalk.inject.RobotActionPlayManager;
 import com.wootalk.inject.WootalkInjectClient;
 
@@ -103,6 +108,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private ImageButton mRefreshButton;
     private ProgressBar mStateProgressBar;
     private TextView mStateTextView;
+    private NotificationManager mNotifyMgr;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -160,15 +166,21 @@ public class FullscreenActivity extends AppCompatActivity {
         mWootalkClient.setOnStateChangeListener(new RobotActionPlayManager.OnStateChangeListener() {
             @Override
             public void onStateChanged(String handlerName, String stateName) {
-                mEnableSwitch.setEnabled(true);
-                mEnableSwitch.setOnCheckedChangeListener(null);
 
-                boolean isRunning = mWootalkClient.isRunning();
-                mEnableSwitch.setChecked(isRunning);
-                mStateProgressBar.setVisibility(isRunning ? View.VISIBLE: View.INVISIBLE);
-                mStateTextView.setText(isRunning ? R.string.state_running : R.string.state_stop);
+                if (!stateName.equals(PlayContext.STATE_FINISHED)){
+                    mEnableSwitch.setEnabled(true);
+                    mEnableSwitch.setOnCheckedChangeListener(null);
 
-                mEnableSwitch.setOnCheckedChangeListener(onControlChangeListener);
+                    boolean isRunning = mWootalkClient.isRunning();
+                    mEnableSwitch.setChecked(isRunning);
+                    mStateProgressBar.setVisibility(isRunning ? View.VISIBLE: View.INVISIBLE);
+                    mStateTextView.setText(isRunning ? R.string.state_running : R.string.state_stop);
+
+                    mEnableSwitch.setOnCheckedChangeListener(onControlChangeListener);
+                }else{
+                    sendNotficiation(getString(R.string.string_find_girl), getString(R.string.string_click_to_show));
+                }
+
             }
         });
     }
@@ -188,7 +200,34 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         });
 
+        mNotifyMgr = (NotificationManager) getSystemService(NOTIFICATION_SERVICE);
     }
+
+
+    private void sendNotficiation(String title, String text){
+
+       // Log.d("testForNotification", "testForNotification");
+        int notificationId = 001;
+        Intent resultIntent = new Intent(this, FullscreenActivity.class);
+
+        PendingIntent resultPendingIntent =
+                PendingIntent.getActivity(
+                        this,
+                        0,
+                        resultIntent,
+                        PendingIntent.FLAG_UPDATE_CURRENT
+                );
+
+        NotificationCompat.Builder mBuilder =
+                new NotificationCompat.Builder(this)
+                        .setContentTitle(title)
+                        .setContentText(text)
+                        .setSmallIcon(R.mipmap.ic_launcher)
+                        .setContentIntent(resultPendingIntent);
+
+        mNotifyMgr.notify(notificationId, mBuilder.build());
+    }
+
 
     @Override
     protected void onPostCreate(Bundle savedInstanceState) {

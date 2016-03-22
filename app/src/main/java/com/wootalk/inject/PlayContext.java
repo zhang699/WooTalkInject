@@ -7,6 +7,7 @@ public interface PlayContext {
     String STATE_STOP = "stop";
     String STATE_NEXT = "next";
     String STATE_START = "start";
+    String STATE_FINISHED = "finished";
     void replay();
     Settings getSettings();
     void reportState(String handlerName, String stateName);

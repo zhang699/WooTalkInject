@@ -60,7 +60,7 @@ public class RobotActionPlayManager implements PlayContext {
 
         String openingSentence = mSettings.getOpeningSentence();
         String personalitySentence = mSettings.getPersonalityOpeningSentence();
-
+        BaseHandler finishHandler = new FinishHandler(this);
         //talkOrQuitdecision.fail(new ChangePersonHandler(null, this));
         BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
         BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForTargetInitResponseHandler(this))
@@ -70,7 +70,8 @@ public class RobotActionPlayManager implements PlayContext {
                                                     .fail(mChangePeronHandler)
                                                     .add(new SendTextHandler(this, personalitySentence))
                                                     .add(new WaitForAnswerTargetHandler(this))
-                                                    .fail(mChangePeronHandler);
+                                                    .fail(mChangePeronHandler)
+                                                    .add(finishHandler);
 
     }
     public void play() {

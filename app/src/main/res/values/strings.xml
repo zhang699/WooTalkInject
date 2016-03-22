@@ -21,26 +21,34 @@
     <string name="pref_title_skipping_waiting_time">設定等待發出開場白的時間</string>
     <string-array name="pref_skipping_waiting_time">
         <item>5 sec</item>
+        <item>8 sec</item>
         <item>10 sec</item>
+        <item>13 sec</item>
         <item>15 sec</item>
     </string-array>
 
     <string name="pref_title_after_skipping_waiting_time">設定幾秒後對方沒回覆開場白就離開</string>
     <string-array name="pref_skipping_waiting_time_list_values">
         <item>5</item>
+        <item>8</item>
         <item>10</item>
+        <item>13</item>
         <item>15</item>
     </string-array>
 
     <string-array name="pref_after_opening_skipping_waiting_time">
         <item>5 sec</item>
+        <item>8 sec</item>
         <item>10 sec</item>
+        <item>13 sec</item>
         <item>15 sec</item>
     </string-array>
 
     <string-array name="pref_after_opening_skipping_waiting_time_list_values">
         <item>5</item>
+        <item>8</item>
         <item>10</item>
+        <item>13</item>
         <item>15</item>
     </string-array>
 
@@ -89,4 +97,6 @@
     <string name="summary_mode_background">尚未完成</string>
     <string name="state_running">AlphaWo作用中</string>
     <string name="state_stop">AlphaWo停止了</string>
+    <string name="string_find_girl">找到女孩了</string>
+    <string name="string_click_to_show">點擊查看</string>
 </resources>
