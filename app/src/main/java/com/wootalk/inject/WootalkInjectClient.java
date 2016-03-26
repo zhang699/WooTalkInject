@@ -16,6 +16,7 @@ public class WootalkInjectClient extends WebViewClient{
     private static final String URL_WOOTALK = "https://wootalk.today/key/%E6%88%90%E4%BA%BA%E6%A8%A1%E5%BC%8F";
     private final JavascriptHelper mJavascriptHelper;
     private final RobotActionPlayManager mPM;
+    private final Settings mSettings;
     //  private Activity mActivity;
     private Runnable mLoadMainTask = new Runnable() {
         @Override
@@ -24,11 +25,14 @@ public class WootalkInjectClient extends WebViewClient{
 
         }
     };
-    public WootalkInjectClient(WebView view) {
+    public WootalkInjectClient(WebView view, Settings settings) {
         mWebView = view;
+        mSettings = settings;
+
         mJavascriptHelper = new JavascriptHelper(view);
         mWebView.postDelayed(mLoadMainTask, 0);
-        mPM = new RobotActionPlayManager(mJavascriptHelper, new Settings(view.getContext()));
+
+        mPM = new RobotActionPlayManager(mJavascriptHelper, settings);
         mPM.init();
 
     }
@@ -48,8 +52,10 @@ public class WootalkInjectClient extends WebViewClient{
     public void onPageFinished(WebView view, String url) {
         super.onPageFinished(view, url);
         Log.d("onPageFinished ", ""+url);
+        if (mSettings.isSystemStarted()){
+            mPM.play();
+        }
 
-        mPM.play();
     }
 
     public boolean isRunning(){

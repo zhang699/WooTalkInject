@@ -8,6 +8,8 @@ public interface PlayContext {
     String STATE_NEXT = "next";
     String STATE_START = "start";
     String STATE_FINISHED = "finished";
+    String STATE_INITIALED = "initialed";
+
     void replay();
     Settings getSettings();
     void reportState(String handlerName, String stateName);

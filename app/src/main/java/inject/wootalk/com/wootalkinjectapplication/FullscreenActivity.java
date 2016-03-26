@@ -112,6 +112,8 @@ public class FullscreenActivity extends AppCompatActivity {
     private TextView mStateTextView;
     private NotificationManager mNotifyMgr;
     private Settings mSettings;
+    private CompoundButton.OnCheckedChangeListener mOnControlChangeLstener;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,16 +123,8 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
-        //mContentView = findViewById(R.id.fullscreen_content);
+        mSettings = new Settings(this);
 
-
-        // Set up the user interaction to manually show or hide the system UI.
-
-
-        // Upon interacting with UI controls, delay any scheduled hide()
-        // operations to prevent the jarring behavior of controls going away
-        // while interacting with the UI.
-        //findViewById(R.id.dummy_button).setOnTouchListener(mDelayHideTouchListener);
 
         initWooTalkWebView();
 
@@ -140,8 +134,8 @@ public class FullscreenActivity extends AppCompatActivity {
         mStateTextView = (TextView) findViewById(R.id.textview_status);
         mRefreshButton = (ImageButton) findViewById(R.id.button_refresh);
 
-        mEnableSwitch.setEnabled(false);
         mStateProgressBar.setVisibility(View.INVISIBLE);
+        //mEnableSwitch.setEnabled(false);
         mSettingsButtons.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,7 +150,8 @@ public class FullscreenActivity extends AppCompatActivity {
                 mWooTalkWebView.reload();
             }
         });
-        final CompoundButton.OnCheckedChangeListener onControlChangeListener = new CompoundButton.OnCheckedChangeListener() {
+
+        mOnControlChangeLstener = new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
                 mEnableSwitch.setEnabled(false);
@@ -164,34 +159,41 @@ public class FullscreenActivity extends AppCompatActivity {
             }
         };
 
-        mEnableSwitch.setOnCheckedChangeListener(onControlChangeListener);
+        mEnableSwitch.setOnCheckedChangeListener(mOnControlChangeLstener);
 
         mWootalkClient.setOnStateChangeListener(new RobotActionPlayManager.OnStateChangeListener() {
             @Override
             public void onStateChanged(String handlerName, String stateName) {
-
-                if (!stateName.equals(PlayContext.STATE_FINISHED)){
+                if (stateName.equals(PlayContext.STATE_INITIALED)) {
                     mEnableSwitch.setEnabled(true);
-                    mEnableSwitch.setOnCheckedChangeListener(null);
+                }else if (!stateName.equals(PlayContext.STATE_FINISHED)){
+                    mEnableSwitch.setEnabled(true);
 
                     boolean isRunning = mWootalkClient.isRunning();
-                    mEnableSwitch.setChecked(isRunning);
-                    mStateProgressBar.setVisibility(isRunning ? View.VISIBLE: View.INVISIBLE);
-                    mStateTextView.setText(isRunning ? R.string.state_running : R.string.state_stop);
+                    setState(isRunning);
+                    mSettings.setSystemStarted(isRunning);
 
-                    mEnableSwitch.setOnCheckedChangeListener(onControlChangeListener);
                 }else{
                     sendNotficiation(getString(R.string.string_find_girl), getString(R.string.string_click_to_show));
                 }
 
             }
         });
-        mSettings = new Settings(this);
+
+        setState(false);
+
+    }
+    private void setState(boolean isRunning){
+        mEnableSwitch.setOnCheckedChangeListener(null);
+        mEnableSwitch.setChecked(isRunning);
+        mStateProgressBar.setVisibility(isRunning ? View.VISIBLE: View.INVISIBLE);
+        mStateTextView.setText(isRunning ? R.string.state_running : R.string.state_stop);
+        mEnableSwitch.setOnCheckedChangeListener(mOnControlChangeLstener);
     }
 
     private void initWooTalkWebView(){
         mWooTalkWebView = (WebView) findViewById(R.id.wootalk_webview);
-        mWootalkClient = new WootalkInjectClient(mWooTalkWebView);
+        mWootalkClient = new WootalkInjectClient(mWooTalkWebView, mSettings);
         mWooTalkWebView.setWebViewClient(mWootalkClient);
 
         WebSettings webSettings = mWooTalkWebView.getSettings();
@@ -211,7 +213,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private void sendNotficiation(String title, String text){
 
        // Log.d("testForNotification", "testForNotification");
-        boolean isVibrate = false;
+
 
         int notificationId = 001;
         Intent resultIntent = new Intent(this, FullscreenActivity.class);

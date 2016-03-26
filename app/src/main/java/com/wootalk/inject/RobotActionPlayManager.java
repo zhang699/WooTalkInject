@@ -62,18 +62,22 @@ public class RobotActionPlayManager implements PlayContext {
         mExceptionHandlers.add(checkTargetFirstMessage);
         //mExceptionHandlers.add(mFinishHandler);
 
+        BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
+        mFinishHandler = new FinishHandler(this);
 
         BaseHandler talkOrQuitdecision =
-                this.add(new StartChatHandler(this));
+                this.add(new StartChatHandler(this))
+                    .add(new WaitForConnectionCompletedHandler(this))
+                    .fail(mChangePeronHandler);
 
 
         String openingSentence = mSettings.getOpeningSentence();
         String personalitySentence = mSettings.getPersonalityOpeningSentence();
 
 
-        mFinishHandler = new FinishHandler(this);
+
         //talkOrQuitdecision.fail(new ChangePersonHandler(null, this));
-        BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
+
         BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForFirstReponseHandler(this))
                                                     .fail(mChangePeronHandler)
                                                     .add(new SendTextHandler(this, openingSentence))
@@ -84,13 +88,19 @@ public class RobotActionPlayManager implements PlayContext {
                                                     .fail(mChangePeronHandler)
                                                     .add(mFinishHandler);
 
+        executeCallback(getClass().getName(), PlayContext.STATE_INITIALED);
+    }
+
+    private void executeCallback(String stateName, String state){
+        if (mOnStateChangeListener != null){
+            mOnStateChangeListener.onStateChanged(stateName, state);
+        }
     }
     public void play() {
         mTruelyStop = false;
         mAskForStop = false;
-        if (mOnStateChangeListener != null){
-            mOnStateChangeListener.onStateChanged(getClass().getName(), PlayContext.STATE_START);
-        }
+
+        executeCallback(getClass().getName(), PlayContext.STATE_START);
 
         mStartHandler.next(mJavascriptHelper);
 

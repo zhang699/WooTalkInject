@@ -6,5 +6,5 @@ package com.wootalk.inject;
 public class ActionElementSelector {
 
     public static final String SELECTOR_STRANGER_MESSAGES = "#messages .stranger.text[mid=\"%s\"] ";
-
+    public static final String SELECTOR_SYSTEM_TEXT = ".system.text:contains(%s)";
 }

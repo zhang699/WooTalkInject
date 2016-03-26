@@ -17,8 +17,12 @@ public class Settings {
     public static final String KEY_PERSONALITY_OPENING = "personality_opening_sentence";
 
     public static final String KEY_NOTIFICATION_NEW_MESSAGES = "notifications_new_message_vibrate";
+    private static final String KEY_IS_STARTED = "is_started";
+
+
     public Settings(Context context){
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+
     }
 
     public int getWaitForResponseDelay(){
@@ -39,6 +43,14 @@ public class Settings {
 
     public boolean getNotificationVibrateEnabled(){
         return mPrefs.getBoolean(KEY_NOTIFICATION_NEW_MESSAGES, true);
+    }
+
+    public boolean isSystemStarted(){
+        return mPrefs.getBoolean(KEY_IS_STARTED, true);
+    }
+
+    public void setSystemStarted(boolean isStarted){
+        mPrefs.edit().putBoolean(KEY_IS_STARTED, isStarted).apply();
     }
 
 }
