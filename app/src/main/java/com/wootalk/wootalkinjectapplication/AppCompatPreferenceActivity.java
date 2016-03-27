@@ -1,4 +1,4 @@
-package inject.wootalk.com.wootalkinjectapplication;
+package com.wootalk.wootalkinjectapplication;
 
 import android.content.res.Configuration;
 import android.os.Bundle;

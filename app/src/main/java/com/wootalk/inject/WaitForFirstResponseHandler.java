@@ -1,14 +1,14 @@
 package com.wootalk.inject;
 
-import model.JavascriptHelper;
+import com.wootalk.model.JavascriptHelper;
 
 /**
  * Created by Chang on 2016/3/22.
  */
-public class WaitForFirstReponseHandler extends BaseHandler {
+public class WaitForFirstResponseHandler extends BaseHandler {
     private int mWaitSec = 12;
 
-    public WaitForFirstReponseHandler(PlayContext playContext) {
+    public WaitForFirstResponseHandler(PlayContext playContext) {
         super(playContext);
     }
 

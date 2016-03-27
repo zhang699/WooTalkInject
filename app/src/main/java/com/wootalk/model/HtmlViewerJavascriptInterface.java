@@ -1,4 +1,4 @@
-package model;
+package com.wootalk.model;
 
 import android.content.Context;
 import android.util.Log;

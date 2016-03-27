@@ -1,14 +1,10 @@
-package model;
+package com.wootalk.model;
 
 import android.os.Handler;
-import android.util.Log;
 import android.webkit.WebView;
 
-import org.jdeferred.Deferred;
-import org.jdeferred.impl.DeferredObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.UUID;

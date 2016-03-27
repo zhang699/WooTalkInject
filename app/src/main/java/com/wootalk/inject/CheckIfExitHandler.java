@@ -1,6 +1,6 @@
 package com.wootalk.inject;
 
-import model.JavascriptHelper;
+import com.wootalk.model.JavascriptHelper;
 
 /**
  * Created by Chang on 2016/3/18.

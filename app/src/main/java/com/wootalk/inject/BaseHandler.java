@@ -1,11 +1,8 @@
 package com.wootalk.inject;
 
 import android.util.Log;
-import android.webkit.JavascriptInterface;
 
-import org.jsoup.Connection;
-
-import model.JavascriptHelper;
+import com.wootalk.model.JavascriptHelper;
 
 /**
  * Created by JimmyJhang on 2016/3/18.
@@ -21,6 +18,7 @@ public class BaseHandler {
         @Override
         public void onFinish(Object result) {
             Log.d("JavascriptHelper", "the command is finished:" + result);
+
             doNext(mNextHandler, mHelper);
         }
     };
@@ -38,10 +36,12 @@ public class BaseHandler {
     }
 
     protected void reportState(String stateName){
-        mPContext.reportState(getClass().getName(), stateName);
+        mPContext.reportState(getClass().getSimpleName(), stateName);
     }
     private void doNext(BaseHandler handler, JavascriptHelper helper){
+
         if (handler != null && mPContext.canPlayNext()){
+            reportState(PlayContext.STATE_LOGGED);
             handler.next(helper);
         }else if (!mPContext.canPlayNext()){
             reportState(PlayContext.STATE_STOP);
@@ -87,6 +87,7 @@ public class BaseHandler {
 
     public void next(JavascriptHelper instructor){
         mHelper = instructor;
+        reportState(PlayContext.STATE_HANDLER_STARTING);
     }
 
     BaseHandler add(BaseHandler handler) {
@@ -100,7 +101,7 @@ public class BaseHandler {
     }
 
 
-    protected void startCheckSpecificTask(final String javascriptFunc, final String selector, int interval,
+    protected void startCheckSpecificTask(final String javascriptFunc, final String selector, long interval,
                                            final OnCheckResult callback ){
         mHelper.postDelayed(new Runnable() {
             @Override
@@ -115,6 +116,24 @@ public class BaseHandler {
             }
         }, interval);
     }
+
+
+    protected void startCheckSpecificTaskIfContainResult(final String javascriptFunc, final String selector, final long interval,
+                                                         final OnCheckResult callback ){
+      startCheckSpecificTask(javascriptFunc, selector, interval, new OnCheckResult() {
+          @Override
+          public void onResult(Object result, Runnable task) {
+              if (result == null){
+                  mHelper.postDelayed(task, interval);
+              }else{
+                  callback.onResult(result, task);
+              }
+          }
+      });
+    }
+
+
+
 
 
 

@@ -1,4 +1,4 @@
-package inject.wootalk.com.wootalkinjectapplication;
+package com.wootalk.wootalkinjectapplication;
 
 
 import android.annotation.TargetApi;
@@ -23,6 +23,8 @@ import android.view.MenuItem;
 import com.wootalk.inject.Settings;
 
 import java.util.List;
+
+import inject.wootalk.com.wootalkinjectapplication.R;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On

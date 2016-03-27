@@ -1,21 +1,21 @@
-package inject.wootalk.com.wootalkinjectapplication;
+package com.wootalk.wootalkinjectapplication;
 
 import android.annotation.SuppressLint;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
+import android.content.Intent;
 import android.graphics.Color;
-import android.support.v7.app.ActionBar;
-import android.support.v7.app.AppCompatActivity;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.NotificationCompat;
-import android.util.Log;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 import android.view.View;
-
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.content.Intent;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ProgressBar;
@@ -26,6 +26,8 @@ import com.wootalk.inject.PlayContext;
 import com.wootalk.inject.RobotActionPlayManager;
 import com.wootalk.inject.Settings;
 import com.wootalk.inject.WootalkInjectClient;
+
+import inject.wootalk.com.wootalkinjectapplication.R;
 
 /**
  * An example full-screen activity that shows and hides the system UI (i.e.
@@ -113,6 +115,7 @@ public class FullscreenActivity extends AppCompatActivity {
     private NotificationManager mNotifyMgr;
     private Settings mSettings;
     private CompoundButton.OnCheckedChangeListener mOnControlChangeLstener;
+    private TextView mLoggerTextView;
 
 
     @Override
@@ -123,6 +126,8 @@ public class FullscreenActivity extends AppCompatActivity {
 
         mVisible = true;
         mControlsView = findViewById(R.id.fullscreen_content_controls);
+        mLoggerTextView = (TextView) findViewById(R.id.textview_state_logger);
+        mLoggerTextView.setVisibility(View.GONE);
         mSettings = new Settings(this);
 
 
@@ -166,6 +171,13 @@ public class FullscreenActivity extends AppCompatActivity {
             public void onStateChanged(String handlerName, String stateName) {
                 if (stateName.equals(PlayContext.STATE_INITIALED)) {
                     mEnableSwitch.setEnabled(true);
+                }else if (stateName.equals(PlayContext.STATE_HANDLER_STARTING)){
+                    mLoggerTextView.append("Starting..." +handlerName+"\n");
+                }else if (stateName.equals(PlayContext.STATE_LOGGED)) {
+                    if (mLoggerTextView.getText().length() > 4096){
+                        mLoggerTextView.setText("");
+                    }
+                    mLoggerTextView.append(handlerName+"\n");
                 }else if (!stateName.equals(PlayContext.STATE_FINISHED)){
                     mEnableSwitch.setEnabled(true);
 
@@ -236,6 +248,9 @@ public class FullscreenActivity extends AppCompatActivity {
 
         if (mSettings.getNotificationVibrateEnabled()){
             mBuilder.setVibrate(new long[] { 1000, 1000});
+
+            Uri alarmSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
+            mBuilder.setSound(alarmSound);
         }
 
         mBuilder.setLights(Color.CYAN, 1000, 1000);

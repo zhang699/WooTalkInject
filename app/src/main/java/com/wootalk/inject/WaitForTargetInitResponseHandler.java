@@ -2,7 +2,7 @@ package com.wootalk.inject;
 
 import android.util.Log;
 
-import model.JavascriptHelper;
+import com.wootalk.model.JavascriptHelper;
 
 /**
  * Created by Chang on 2016/3/18.

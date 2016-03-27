@@ -5,7 +5,7 @@ import android.util.Log;
 import java.util.ArrayList;
 import java.util.List;
 
-import model.JavascriptHelper;
+import com.wootalk.model.JavascriptHelper;
 
 /**
  * Created by Chang on 2016/3/18.
@@ -58,8 +58,11 @@ public class RobotActionPlayManager implements PlayContext {
         BaseHandler checkTargetFirstMessage = new WaitForTargetInitResponseHandler(this);
         checkTargetFirstMessage.fail(new ChangePersonHandler(this, null));
 
+        BaseHandler checkActionBlocking = new CheckIfActionBlockingHandler(this);
+
         mExceptionHandlers.add(checkIfExit);
         mExceptionHandlers.add(checkTargetFirstMessage);
+        mExceptionHandlers.add(checkActionBlocking);
         //mExceptionHandlers.add(mFinishHandler);
 
         BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
@@ -78,13 +81,13 @@ public class RobotActionPlayManager implements PlayContext {
 
         //talkOrQuitdecision.fail(new ChangePersonHandler(null, this));
 
-        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForFirstReponseHandler(this))
+        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForFirstResponseHandler(this))
                                                     .fail(mChangePeronHandler)
                                                     .add(new SendTextHandler(this, openingSentence))
-                                                    .add(new WaitForAnswerTargetHandler(this))
+                                                    .add(new WaitForTargetAnswerHandler(this))
                                                     .fail(mChangePeronHandler)
                                                     .add(new SendTextHandler(this, personalitySentence))
-                                                    .add(new WaitForAnswerTargetHandler(this))
+                                                    .add(new WaitForTargetAnswerHandler(this))
                                                     .fail(mChangePeronHandler)
                                                     .add(mFinishHandler);
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 
+import inject.wootalk.com.wootalkinjectapplication.R;
+
 /**
  * Created by Chang on 2016/3/19.
  */
@@ -21,6 +23,8 @@ public class Settings {
 
 
     public Settings(Context context){
+        PreferenceManager.setDefaultValues(context, R.xml.pref_general, false);
+
         mPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
     }

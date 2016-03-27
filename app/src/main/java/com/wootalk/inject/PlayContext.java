@@ -9,6 +9,8 @@ public interface PlayContext {
     String STATE_START = "start";
     String STATE_FINISHED = "finished";
     String STATE_INITIALED = "initialed";
+    String STATE_LOGGED = "logged";
+    String STATE_HANDLER_STARTING = "handlerStarting";
 
     void replay();
     Settings getSettings();

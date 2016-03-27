@@ -5,14 +5,14 @@ import android.util.Log;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import model.JavascriptHelper;
+import com.wootalk.model.JavascriptHelper;
 
 /**
  * Created by Chang on 2016/3/20.
  */
-public class WaitForAnswerTargetHandler extends BaseHandler {
+public class WaitForTargetAnswerHandler extends BaseHandler {
 
-    public WaitForAnswerTargetHandler(PlayContext playContext) {
+    public WaitForTargetAnswerHandler(PlayContext playContext) {
         super(playContext);
     }
     private int CHECKING_INTERVAL = 500;
@@ -64,7 +64,7 @@ public class WaitForAnswerTargetHandler extends BaseHandler {
 
 
                 } else {
-                    //cannot find yourself
+                   mPContext.replay();
                 }
             }
 
