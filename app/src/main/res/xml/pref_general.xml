@@ -73,5 +73,8 @@
        android:positiveButtonText="@null"
        android:title="@string/pref_title_after_skipping_waiting_time" />
 
+    <Preference
+        android:key="version"
+        android:title="@string/version" />
 
 </PreferenceScreen>

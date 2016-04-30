@@ -4,6 +4,7 @@ package com.wootalk.wootalkinjectapplication;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
 import android.content.res.Configuration;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
@@ -24,6 +25,7 @@ import com.wootalk.inject.Settings;
 
 import java.util.List;
 
+import inject.wootalk.com.wootalkinjectapplication.BuildConfig;
 import inject.wootalk.com.wootalkinjectapplication.R;
 
 /**
@@ -196,6 +198,8 @@ public class SettingsActivity extends AppCompatPreferenceActivity {
             bindPreferenceSummaryToValue(findPreference(Settings.KEY_SKIPPING_WAITING_TIME));
             bindPreferenceSummaryToValue(findPreference(Settings.KEY_AFTER_OPENING_WAITING_TIME));
             bindPreferenceSummaryToValue(findPreference(Settings.KEY_PERSONALITY_OPENING));
+
+            findPreference(Settings.KEY_VERSION).setSummary(BuildConfig.VERSION_NAME);
         }
 
         @Override

@@ -11,6 +11,7 @@ import inject.wootalk.com.wootalkinjectapplication.R;
  */
 public class Settings {
 
+    public static String KEY_VERSION = "version";
     private final SharedPreferences mPrefs;
     public static final String KEY_OPENING_SENTENCE = "opening_sentence";
     public static final String KEY_SKIPPING_WAITING_TIME = "skipping_waitingtime";

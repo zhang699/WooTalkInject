@@ -99,4 +99,5 @@
     <string name="state_stop">AlphaWo停止了</string>
     <string name="string_find_girl">找到女孩了</string>
     <string name="string_click_to_show">點擊查看</string>
+    <string name="version">版本號</string>
 </resources>
