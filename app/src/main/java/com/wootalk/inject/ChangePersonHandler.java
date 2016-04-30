@@ -1,6 +1,7 @@
 package com.wootalk.inject;
 
 import com.wootalk.model.JavascriptHelper;
+import com.wootalk.model.OnPersonChangeListener;
 
 /**
  * Created by Chang on 2016/3/18.
@@ -8,9 +9,12 @@ import com.wootalk.model.JavascriptHelper;
 public class ChangePersonHandler extends BaseHandler {
     private final PlayContext mRestarter;
     private static final long TIMEOUT_CHECKING = 1000;
-    public ChangePersonHandler(PlayContext playContext, BaseHandler next) {
+    private final OnPersonChangeListener mPersonChangeListener;
+
+    public ChangePersonHandler(PlayContext playContext, BaseHandler next, OnPersonChangeListener personChangeListener) {
         super(playContext);
         mRestarter = playContext;
+        mPersonChangeListener = personChangeListener;
     }
 
     @Override
@@ -21,12 +25,14 @@ public class ChangePersonHandler extends BaseHandler {
             @Override
             public void onFinish(Object result) {
                 final long startCheckingTime = System.currentTimeMillis();
+                mPersonChangeListener.onStartChanged();
                 startCheckSpecificTask("", ActionElementSelector.SELECTOR_CHANGE_PERSON,
                         ActionElementSelector.DEFAULT_SELECTOR_CHECKING_TIMEOUT, new OnCheckResult() {
                     @Override
                     public void onResult(Object result, Runnable task) {
-                        boolean isReachTimeout = System.currentTimeMillis() - startCheckingTime >TIMEOUT_CHECKING ;
+                        boolean isReachTimeout = (System.currentTimeMillis() - startCheckingTime) >TIMEOUT_CHECKING ;
                         if (result != null){
+                            mPersonChangeListener.onChangedFinished();
                             callWithCallback("$('#popup-yes').click()", "", new JavascriptHelper.FinishCallback(){
                                 @Override
                                 public void onFinish(Object result) {

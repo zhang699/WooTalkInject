@@ -16,4 +16,5 @@ public interface PlayContext {
     Settings getSettings();
     void reportState(String handlerName, String stateName);
     boolean canPlayNext();
+    boolean isCanCancelBlocking();
 }

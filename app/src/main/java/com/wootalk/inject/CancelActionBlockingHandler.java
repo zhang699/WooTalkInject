@@ -5,10 +5,10 @@ import com.wootalk.model.JavascriptHelper;
 /**
  * Created by Chang on 2016/3/26.
  */
-public class CheckIfActionBlockingHandler extends BaseHandler {
+public class CancelActionBlockingHandler extends BaseHandler {
     private static final long TIMEOUT_CHECKING = 2000;
 
-    public CheckIfActionBlockingHandler(PlayContext playContext) {
+    public CancelActionBlockingHandler(PlayContext playContext) {
         super(playContext);
     }
 
@@ -22,7 +22,7 @@ public class CheckIfActionBlockingHandler extends BaseHandler {
                     @Override
                     public void onResult(Object result, Runnable task) {
                         boolean isReachTimeout = System.currentTimeMillis() - startCheckingTime >TIMEOUT_CHECKING ;
-                        if (isReachTimeout && result != null){
+                        if (isReachTimeout && result != null && mPContext.isCanCancelBlocking()){
                             call("$('.mfp-content').click()", "");
                         }
                         instructor.postDelayed(task, ActionElementSelector.DEFAULT_SELECTOR_CHECKING_TIMEOUT);

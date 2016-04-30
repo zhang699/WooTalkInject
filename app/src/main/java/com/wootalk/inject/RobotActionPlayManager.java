@@ -6,11 +6,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wootalk.model.JavascriptHelper;
+import com.wootalk.model.OnPersonChangeListener;
 
 /**
  * Created by Chang on 2016/3/18.
  */
-public class RobotActionPlayManager implements PlayContext {
+public class RobotActionPlayManager implements PlayContext, OnPersonChangeListener {
 
 
     private final JavascriptHelper mJavascriptHelper;
@@ -24,15 +25,31 @@ public class RobotActionPlayManager implements PlayContext {
     private OnStateChangeListener mOnStateChangeListener;
     private List<BaseHandler> mExceptionHandlers = new ArrayList<BaseHandler>();
     private FinishHandler mFinishHandler;
+    private boolean mIsChangingPersion;
 
     public void setOnStateChangeListener(OnStateChangeListener onStateChangeListener){
         mOnStateChangeListener = onStateChangeListener;
+    }
+
+    @Override
+    public void onStartChanged() {
+        mIsChangingPersion = true;
+    }
+
+    @Override
+    public void onChangedFinished() {
+        mIsChangingPersion = false;
     }
 
 
     public interface OnStateChangeListener{
         void onStateChanged(String handlerName, String stateName);
     }
+
+
+
+
+
     public RobotActionPlayManager(JavascriptHelper javascriptHelper, Settings settings) {
         mJavascriptHelper = javascriptHelper;
         mSettings = settings;
@@ -53,19 +70,19 @@ public class RobotActionPlayManager implements PlayContext {
 
         mExceptionHandlers.clear();
         BaseHandler checkIfExit = new CheckIfExitHandler(this);
-        checkIfExit.fail(new ChangePersonHandler(this, null));
+        checkIfExit.fail(new ChangePersonHandler(this, null, this));
 
         BaseHandler checkTargetFirstMessage = new WaitForTargetInitResponseHandler(this);
-        checkTargetFirstMessage.fail(new ChangePersonHandler(this, null));
+        checkTargetFirstMessage.fail(new ChangePersonHandler(this, null, this));
 
-        BaseHandler checkActionBlocking = new CheckIfActionBlockingHandler(this);
+        BaseHandler checkActionBlocking = new CancelActionBlockingHandler(this);
 
         mExceptionHandlers.add(checkIfExit);
         mExceptionHandlers.add(checkTargetFirstMessage);
         mExceptionHandlers.add(checkActionBlocking);
         //mExceptionHandlers.add(mFinishHandler);
 
-        BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null);
+        BaseHandler mChangePeronHandler = new ChangePersonHandler(this, null, this);
         mFinishHandler = new FinishHandler(this);
 
         BaseHandler talkOrQuitdecision =
@@ -81,7 +98,7 @@ public class RobotActionPlayManager implements PlayContext {
 
         //talkOrQuitdecision.fail(new ChangePersonHandler(null, this));
 
-        BaseHandler checkIfQuit = talkOrQuitdecision.add(new WaitForFirstResponseHandler(this))
+        talkOrQuitdecision.add(new WaitForFirstResponseHandler(this))
                                                     .fail(mChangePeronHandler)
                                                     .add(new SendTextHandler(this, openingSentence))
                                                     .add(new WaitForTargetAnswerHandler(this))
@@ -92,6 +109,8 @@ public class RobotActionPlayManager implements PlayContext {
                                                     .add(mFinishHandler);
 
         executeCallback(getClass().getName(), PlayContext.STATE_INITIALED);
+
+        mIsChangingPersion = false;
     }
 
     private void executeCallback(String stateName, String state){
@@ -117,6 +136,7 @@ public class RobotActionPlayManager implements PlayContext {
         mJavascriptHelper.postDelayed(new Runnable() {
             @Override
             public void run() {
+
                 mStartHandler = null;
                 mPrevHandler = null;
 
@@ -149,6 +169,11 @@ public class RobotActionPlayManager implements PlayContext {
     @Override
     public boolean canPlayNext() {
         return !mAskForStop;
+    }
+
+    @Override
+    public boolean isCanCancelBlocking() {
+        return !mIsChangingPersion;
     }
 
     public void start(boolean isStart) {
