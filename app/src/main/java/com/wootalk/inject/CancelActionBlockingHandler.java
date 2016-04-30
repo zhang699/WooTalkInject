@@ -8,6 +8,7 @@ import com.wootalk.model.JavascriptHelper;
 public class CancelActionBlockingHandler extends BaseHandler {
     private static final long TIMEOUT_CHECKING = 2000;
 
+
     public CancelActionBlockingHandler(PlayContext playContext) {
         super(playContext);
     }
@@ -23,7 +24,7 @@ public class CancelActionBlockingHandler extends BaseHandler {
                     public void onResult(Object result, Runnable task) {
                         boolean isReachTimeout = System.currentTimeMillis() - startCheckingTime >TIMEOUT_CHECKING ;
                         if (isReachTimeout && result != null && mPContext.isCanCancelBlocking()){
-                            call("$('.mfp-content').click()", "");
+                            call(ActionElementSelector.UI_ACTION_$_MFP_CONTENT_CLICK, "");
                         }
                         instructor.postDelayed(task, ActionElementSelector.DEFAULT_SELECTOR_CHECKING_TIMEOUT);
 

@@ -133,7 +133,7 @@ public class RobotActionPlayManager implements PlayContext, OnPersonChangeListen
 
     @Override
     public void replay() {
-        mJavascriptHelper.postDelayed(new Runnable() {
+       Runnable replayTask = new Runnable() {
             @Override
             public void run() {
 
@@ -146,7 +146,8 @@ public class RobotActionPlayManager implements PlayContext, OnPersonChangeListen
 
                 play();
             }
-        }, RESTART_DELAY);
+        };
+        mJavascriptHelper.postDelayed(replayTask, RESTART_DELAY);
 
     }
 

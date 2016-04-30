@@ -18,7 +18,7 @@ public class StartChatHandler extends BaseHandler {
             @Override
             public void onResult(Object result, Runnable task) {
                 if (result == null){
-                    call("clickStartChat()", "");
+                    call(ActionElementSelector.METHOD_CLICK_START_CHAT + "()", "");
                     //startCheckSpecificTask("", Ac);
                 }else{
                     instructor.postDelayed(task, ActionElementSelector.DEFAULT_SELECTOR_CHECKING_TIMEOUT);

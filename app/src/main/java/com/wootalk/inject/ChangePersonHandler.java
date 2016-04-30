@@ -21,7 +21,7 @@ public class ChangePersonHandler extends BaseHandler {
     public void next(final JavascriptHelper instructor) {
         super.next(instructor);
         //.mfp-container .mfp-content .white-popup
-        callWithCallback("changePerson();", "", new JavascriptHelper.FinishCallback(){
+        callWithCallback(ActionElementSelector.METHOD_CHANGE_PERSON, "", new JavascriptHelper.FinishCallback(){
             @Override
             public void onFinish(Object result) {
                 final long startCheckingTime = System.currentTimeMillis();
@@ -33,7 +33,7 @@ public class ChangePersonHandler extends BaseHandler {
                         boolean isReachTimeout = (System.currentTimeMillis() - startCheckingTime) >TIMEOUT_CHECKING ;
                         if (result != null){
                             mPersonChangeListener.onChangedFinished();
-                            callWithCallback("$('#popup-yes').click()", "", new JavascriptHelper.FinishCallback(){
+                            callWithCallback(ActionElementSelector.UI_ACTION_$_POPUP_YES_CLICK, "", new JavascriptHelper.FinishCallback(){
                                 @Override
                                 public void onFinish(Object result) {
                                     mRestarter.replay();

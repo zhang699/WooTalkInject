@@ -69,7 +69,7 @@ public class WaitForTargetAnswerHandler extends BaseHandler {
             }
 
         };
-        callWithCallback("", "#messages .me.text", findMeTextCallback);
+        callWithCallback("", ActionElementSelector.SELECTOR_MESSAGES_ME_TEXT, findMeTextCallback);
     }
 
 

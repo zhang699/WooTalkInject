@@ -6,7 +6,6 @@ import com.wootalk.model.JavascriptHelper;
  * Created by Chang on 2016/3/18.
  */
 public class CheckIfExitHandler extends BaseHandler {
-    private final String EXIT_STRING = "對方離開了，請按離開按鈕回到首頁";
     private static final int CHECKING_DELAY = 500;
     private final boolean mIsCheckInfinitely;
 
@@ -22,7 +21,7 @@ public class CheckIfExitHandler extends BaseHandler {
     @Override
     public void next(final JavascriptHelper instructor) {
         super.next(instructor);
-        String checkSelector = String.format(".system.text:contains(%s)", EXIT_STRING);
+        String checkSelector = String.format(ActionElementSelector.SELECTOR_SYSTEM_TEXT_CONTAINS_S, ActionElementSelector.TEXT_EXIT_STRING);
 
         startCheckSpecificTask("", checkSelector, CHECKING_DELAY, new OnCheckResult(){
             @Override

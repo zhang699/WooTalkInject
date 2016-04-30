@@ -19,12 +19,12 @@ public class SendTextHandler extends BaseHandler {
         super.next(instructor);
         //'stranger typing'"#contents .stranger.typing"
 
-        String inputMsg = String.format("$('#messageInput').val('%s')", mTextMsg);
+        String inputMsg = String.format(ActionElementSelector.UI_ACTION_$_MESSAGE_INPUT_VAL_S, mTextMsg);
         //Log.d("SendTextHandler.next", inputMsg);
         callWithCallback(inputMsg, "", new JavascriptHelper.FinishCallback(){
             @Override
             public void onFinish(Object result) {
-                call("sendMessage()", "");
+                call(ActionElementSelector.METHOD_SEND_MESSAGE, "");
             }
         });
 
